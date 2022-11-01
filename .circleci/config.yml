@@ -1,0 +1,173 @@
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+orbs:
+  jq: circleci/jq@2.2.0
+parameters:
+  clientcode:
+    type: string
+    default: ""
+  environment:
+    type: string
+    default: ""
+  subid:
+    type: string
+    default: ""
+  tfsubid:
+    type: string
+    default: ""
+executors:
+  my-executor-terraform:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    working_directory: /home/circleci/workingfiles
+  my-executor-createcicontext:
+    docker: 
+      - image: cimg/base:2022.05      
+    working_directory: /home/circleci/workingfiles
+jobs:
+  # create-transformedbase:
+  #   executor: my-executor-createcicontext
+  #   environment:
+  #      clientmetafile: << pipeline.parameters.clientcode >>
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Transform client meta data into base json
+  #         command: |
+  #           sudo apt install python3.8
+  #           sudo apt-get update
+  #           sudo apt-get -y install python3-pip
+  #           sudo python3 ./scripts/abtransform.py ${clientmetafile} > /home/circleci/workingfiles/transformedbase.json
+  #     - persist_to_workspace:
+  #         root: /home/circleci/workingfiles
+  #         paths:
+  #           - transformedbase.json
+
+  prep-config:
+    #prepare the tfvar json file based on environment & engagement/client config
+    executor: my-executor-createcicontext
+    environment:
+       clientmetafile: << pipeline.parameters.clientcode >>
+       environment: << pipeline.parameters.environment >>
+    steps:
+      - checkout
+      - run:
+          name: Transform client meta data into base json
+          command: |
+            sudo apt install python3.8
+            sudo apt-get update
+            sudo apt-get -y install python3-pip
+            sudo python3 ./scripts/merge_json.py ./config/${environment}.json ./config/base.json  /home/circleci/workingfiles/env_config.json > /home/circleci/workingfiles/env_config.json
+            sudo python3 ./scripts/merge_json.py ./config/engagement/${clientmetafile}.json /home/circleci/workingfiles/env_config.json /home/circleci/workingfiles/client_config.json
+            sudo python3 ./scripts/merge_json.py ./config/engagement/${clientmetafile}.${environment}.json /home/circleci/workingfiles/client_config.json /home/circleci/workingfiles/client_env_config.json
+            #sudo python3 ./scripts/merge_json.py  /home/circleci/workingfiles/client_env_config.json ./Terraform/template_input.tfvars.json /home/circleci/workingfiles/terraforminput.tfvars.json
+            sudo python3 ./scripts/merge_json.py  /home/circleci/workingfiles/client_env_config.json ./Terraform/terraforminput.tfvars.json /home/circleci/workingfiles/terraforminput.tfvars.json
+
+
+      - persist_to_workspace:
+          root: /home/circleci/workingfiles
+          paths:
+            - terraforminput.tfvars.json
+  # create-pre-tfvars:
+  #     executor: my-executor-createcicontext
+  #     steps:
+  #       - checkout
+  #       - attach_workspace:
+  #           at: /home/circleci/workingfiles
+  #       - run:
+  #           name: Transform client meta data into base json
+  #           command: |
+  #             sudo apt install python3.8
+  #             sudo apt-get update
+  #             sudo apt-get -y install python3-pip
+  #             sudo python3 ./scripts/abpreparetfvars.py > /home/circleci/workingfiles/terraforminput.tfvars.json
+  #       - persist_to_workspace:
+  #           root: /home/circleci/workingfiles
+  #           paths:
+  #             - terraforminput.tfvars.json
+
+  file-transform:
+    #adding context key/values into the tfvar json file
+    executor: my-executor-createcicontext
+    steps:
+      - checkout
+      - attach_workspace:
+            at: /home/circleci/workingfiles
+      - jq/install
+      - run:
+          command: |
+            bash ./scripts/abtransform.sh
+      - persist_to_workspace:
+          root: /home/circleci/workingfiles
+          paths:
+            - terraformoutput.tfvars.json
+  check-persistance-varfile-from-last-job:
+    docker:
+    - image: cimg/base:2022.05    
+    steps:        
+      - attach_workspace:
+          at: /home/circleci/workingfiles
+      - run:
+          name: Check whether you can access transformed file
+          command: |
+            # cat /home/circleci/workingfiles/transformedbase.json
+            cat /home/circleci/workingfiles/terraforminput.tfvars.json
+            # cat /home/circleci/workingfiles/terraformoutput.tfvars.json            
+
+#--------------------------------------- Task: Terraform Init & Plan and apply ----------------------------------------------- #
+  terraform-init-plan-apply-destroy:
+    executor: my-executor-terraform
+    environment:
+      subscriptionid: <<pipeline.parameters.subid>>
+      envvar: <<pipeline.parameters.environment>>
+      client_code: <<pipeline.parameters.clientcode>>
+      tfsubscriptionid: <<pipeline.parameters.tfsubid>>
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/workingfiles
+      - run:
+          name: get ip to add to azure storage account
+          command: |
+             apk add curl
+             apk add jq
+             publicip=$(curl ifconfig.me)
+             echo "export ip=$publicip" >> $BASH_ENV
+             echo $publicip
+             
+      - run:
+          name: Terraform Init & plan & apply / destroy
+          command: |
+             sh ./scripts/abinfracheck.sh      
+
+workflows:
+
+  orp-azure-infra-workflow:
+    jobs:
+      # - create-transformedbase:
+      #     context:
+      #       - orp-cb-synapse-ws-infra-<<pipeline.parameters.environment>>        
+      # - create-pre-tfvars:
+      #     context:
+      #       - orp-cb-synapse-ws-infra-<<pipeline.parameters.environment>>
+      #     requires:
+      #     - create-transformedbase
+      - prep-config:
+          context:
+            - orp-cb-synapse-ws-infra-<<pipeline.parameters.environment>>
+      - file-transform:
+          context:
+            - orp-cb-synapse-ws-infra-<<pipeline.parameters.environment>>
+          requires:
+          - prep-config
+      - check-persistance-varfile-from-last-job:
+          context:
+           - orp-cb-synapse-ws-infra-<<pipeline.parameters.environment>>          
+          requires:
+          - file-transform
+      - terraform-init-plan-apply-destroy:
+         context:
+          - orp-cb-synapse-ws-infra-<<pipeline.parameters.environment>>         
+         requires:
+          - check-persistance-varfile-from-last-job
+ 
