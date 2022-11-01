@@ -1,0 +1,6 @@
+{"CLIENT_CODE":"hahaplay",
+    "charge_code":"ABC123",
+    "CLIENT_SUBSCRIPTION_ID":"de72e1c2-78d8-41ef-af80-11538d656394",
+	"location":"westeurope",
+    "workspace_name":"syn-orpcb-hahaplay-dev-we",
+    "workspace_id":"/subscriptions/de72e1c2-78d8-41ef-af80-11538d656394/resourceGroups/rg-orpcb-hahaplay-dev-westeurope/providers/Microsoft.Synapse/workspaces/syn-orpcb-hahaplay-dev-we"}

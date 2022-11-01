@@ -1,0 +1,11 @@
+{
+    "contributors_group":"aacc215f-6db2-44b1-8fa4-8f3cee61f37f",
+    "admins_group":"a53b98ae-d384-4248-97a2-f29c0c729899",
+    "aad_login_object_id":"a53b98ae-d384-4248-97a2-f29c0c729899",
+    "aad_login_name":"orpcb-sbx-admins",   
+    "synapse_config": {
+        "sparkPool_config": {
+            "pool_nodesize"             : "Small"
+        }
+    }
+}

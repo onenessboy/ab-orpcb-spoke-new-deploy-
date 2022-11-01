@@ -1,0 +1,35 @@
+{"CLIENT_CODE":"blue-print",
+    "CLIENT_SUBSCRIPTION_ID":"xxxx-xxxx-xxxx-xxxxx-xxxxxxxx",
+    "charge_code":"ZYR230",
+    "location":"westeurope",
+    "aad_login_tenant_id":"b0257c14-cacc-44c6-8927-5b4ce5de0874",
+    "kv_sku_name":"standard",
+    "storage_account_tier":"Standard",
+    "storage_account_replication_type":"RAGRS",
+    "storage_account_kind":"StorageV2",
+    "sql_pool_sku_name":"DW100c",
+    "node_size_family":"MemoryOptimized",
+    "spark_pool_nodesize":"Medium",
+    "spark_version":"3.1",
+    "autoscale_max_node_count":"50",
+    "autoscale_min_node_count":"3",
+    "enable_syn_sparkpool":"true",
+    "enable_syn_sqlpool":"false",
+    "hub_location":"westeurope",
+    "hub_rg":"hub",
+    "cosmosdb_offer_type":"Standard",
+    "cosmosdb_kind":"GlobalDocumentDB",
+    "cosmosdb_consistancy_level":"Session",
+    "synapse_config": {
+        "sparkPool_config": {
+            "deploy":true,
+            "pool_nodesize"             : "Medium",
+            "autoscale_max_node_count"  : 50,
+            "autoscale_min_node_count"  : 3,
+            "version"                   : "3.1"
+        },
+        "sqlPool_config" : {
+            "deploy":false
+        }
+    }
+}
