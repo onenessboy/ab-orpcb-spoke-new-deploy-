@@ -11,8 +11,9 @@ module "synapse_dedicated_sql_pool" {
   autoscale_min_node_count = var.autoscale_min_node_count
   enable_syn_sqlpool = var.enable_syn_sqlpool
   spark_version = var.spark_version
-
-  #tags = local.common_tags  //TODO - add tags to module
+//TODO - add tags to module
+// status : done In testing
+  tags = local.common_tags  
 }
 
 # Spark pool
@@ -27,7 +28,7 @@ module "synapse_spark_pool" {
   autoscale_min_node_count = var.autoscale_min_node_count
   enable_syn_sparkpool = var.enable_syn_sparkpool
   spark_version = var.spark_version
-
-  #tags = local.common_tags   //TODO - add tags to module
-}
+ //TODO - add tags to module}
+ // status : done In testing
+  tags = local.common_tags  
 

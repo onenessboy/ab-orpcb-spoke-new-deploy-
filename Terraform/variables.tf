@@ -160,7 +160,9 @@ variable "hub_arm_client_id" {
   type = string
 }
 
-variable "hub_arm_client_secret" {  //TODO - sensitive
+//TODO - sensitive
+// Status = No action requried, its comes from circleci context hnce its already protected
+variable "hub_arm_client_secret" {  
   type = string
 }
 
@@ -172,7 +174,9 @@ variable  "ARM_CLIENT_ID" {
   type = string
 }
 
-variable  "ARM_CLIENT_SECRET" {     //TODO - sensitive
+//TODO - sensitive
+// Status = No action requried, its comes from circleci context hnce its already protected
+variable  "ARM_CLIENT_SECRET" {     
   type = string
 }
 
@@ -196,18 +200,14 @@ variable ip_range_filter {
   type = string
 }
 
+//TODO - rename variable; flat it out as string
+// status  = done testing
 variable "admins_group" {
   description = "Roles assigned to Admins Group"
-  type = any
-  default = {   //TODO - rename variable; flat it out as string
-    dev = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    sbx = "a53b98ae-d384-4248-97a2-f29c0c729899"
-    stg = "98c77ec5-f35b-4465-8d52-7712c2213ac3"
-    prod = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  }
+  type = string
 }
 
-variable "contributors_group" {
+variable "AAD_contributors_group_id" {
   description = "Roles assigned to Contributors Group"
   type = string
 }

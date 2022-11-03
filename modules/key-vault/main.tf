@@ -30,14 +30,17 @@ resource "azurerm_key_vault" "syn_kv" {
   #   type = "SystemAssigned"
   # }
 
-  tags = var.tags
+  tags = local.common_tags
+
 }
 
-resource "azurerm_role_assignment" "rbac_assignment" {
-  scope                = azurerm_key_vault.syn_kv.id
-  role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = var.admins_group[var.env]    //TODO - if admin_group is flatten, the env shouldn't be needed
-}
+ //TODO - if admin_group is flatten, the env shouldn't be needed
+ // status - pending , will not be able to test on local
+# resource "azurerm_role_assignment" "rbac_assignment" {
+#   scope                = azurerm_key_vault.syn_kv.id
+#   role_definition_name = "Key Vault Secrets Officer"
+#   principal_id         = var.admins_group[var.env]   
+# }
 
 resource "azurerm_role_assignment" "rbac_assignment_reader" {
   scope                = azurerm_key_vault.syn_kv.id
@@ -46,6 +49,29 @@ resource "azurerm_role_assignment" "rbac_assignment_reader" {
 }
 
 
-
 //TODO - add azurerm_monitor_diagnostic_setting if feature flag/config provided
 //needs to report into hub log analytics + logs storage account
+// status : Need to put entire resource id directly in target_resourced_id below, cant be tested in local
+# resource "azurerm_monitor_diagnostic_setting" "kvdiagsetting" {
+#   name                       = lower("kv-diag")
+#   target_resource_id         = azurerm_key_vault.syn_kv.id
+#   storage_account_id         = azurerm_storage_account.logs.id
+#   log_analytics_workspace_id = azurerm_log_analytics_workspace.logws.id
+
+#   log {
+#     category = "AuditEvent"
+#     enabled  = true
+
+#     retention_policy {
+#       enabled = true
+#       days = "365"
+#     }
+#   }
+#   metric {
+#     category = "AllMetrics"
+#     retention_policy {
+#       enabled = true
+#       days = "365"
+#     }
+#   }
+# }

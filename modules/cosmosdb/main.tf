@@ -23,7 +23,7 @@ resource "azurerm_cosmosdb_account" "cosmosaccount" {
   #   id                = var.subnet_id
   #   ignore_missing_vnet_service_endpoint = true
   # }
-  tags     = var.tags
+  tags = local.common_tags
 }
 
 

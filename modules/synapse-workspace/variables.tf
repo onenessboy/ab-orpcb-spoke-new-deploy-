@@ -57,9 +57,6 @@ variable "aad_login" {
   })
 }
 
-variable "env" {
-  type = string
-}
 
 variable "client_code" {
   type = string
@@ -112,26 +109,21 @@ variable "hub_arm_client_secret" {
   type = string
 }
 
-variable "contributors_group" { //TODO - rename for AAD_contributors_group_id maybe?
+//TODO - rename for AAD_contributors_group_id maybe?
+// status : done, in testing
+//TODO - remove default values and have them present into the metadata\config per environment
+// status -- done
+variable "AAD_contributors_group_id" { 
   description = "Roles assigned to Contributors Group"
-  type = any
-  default = {   //TODO - remove default values and have them present into the metadata\config per environment
-    dev = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    sbx = "aacc215f-6db2-44b1-8fa4-8f3cee61f37f"
-    stg = "24847260-7d6d-4d29-ad8c-4132d6ae000a"
-    prod = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-}
+  type = string
 }
 
-variable "admins_group" {
+//TODO - change to string, rename variable name (see above)
+// status -- done in testing
+//TODO - remove default values and have them present into the metadata\config per environment
+variable "AAD_admins_group_id" {
   description = "Roles assigned to Admins Group"
-  type = any    //TODO - change to string, rename variable name (see above)
-  default = {   //TODO - remove default values and have them present into the metadata\config per environment
-    dev = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    sbx = "a53b98ae-d384-4248-97a2-f29c0c729899"
-    stg = "98c77ec5-f35b-4465-8d52-7712c2213ac3"
-    prod = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-}
+  type = string
 }
 
 variable "tags" {

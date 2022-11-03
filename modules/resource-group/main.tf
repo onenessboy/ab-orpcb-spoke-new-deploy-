@@ -9,8 +9,7 @@ locals {
   })
 }
 resource "azurerm_resource_group" "syn_rg" {
-  # Reverting back to original naming convention
   name     = "rg-orpcb-${var.client_code}-${var.env}-${local.location_prefix[coalesce(var.location)]}"
   location = var.location
-  tags     = var.tags
+  tags = local.common_tags
 }

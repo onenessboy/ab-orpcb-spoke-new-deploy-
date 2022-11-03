@@ -12,7 +12,6 @@ module "storage_account" {
   hns_enabled                         = true
   firewall_bypass                     = ["None"]
   firewall_virtual_network_subnet_ids = []
-
   tags = local.common_tags
 }
 

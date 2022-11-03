@@ -9,6 +9,8 @@ resource "azurerm_synapse_sql_pool" "syn_syndp" {
   sku_name             = var.sql_pool_sku_name
   create_mode          = "Default"
   count                = var.enable_syn_sqlpool ? 1 : 0
+  tags = local.common_tags  
+
 }
 
 #--------------------------------------------
@@ -30,4 +32,5 @@ resource "azurerm_synapse_spark_pool" "syn_synsp" {
   auto_pause {
     delay_in_minutes = 15
   }
+  tags = local.common_tags 
 }

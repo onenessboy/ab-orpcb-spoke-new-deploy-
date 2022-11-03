@@ -35,7 +35,11 @@ data "http" "ip" {
 locals {
   product_id        = 14520
   charge_code       = var.charge_code
-  atlas_tenant_code = var.client_code //TODO - check if we need this to be place into variables (to be added to client config)
+  //TODO - check if we need this to be place into variables (to be added to client config)
+  // status: In Progress, added this now into client.json
+  #atlas_tenant_code = var.client_code
+  atlas_tenant_code = var.atlas_tenant_code
+ 
   common_tags = merge(var.tags,
     { "product_id" = local.product_id },
     { "charge_code" = local.charge_code },

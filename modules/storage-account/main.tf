@@ -13,6 +13,7 @@ locals {
 }
 
 //TODO - reconsider the rename of the module - this can't be applied for regular storage accounts, only for synapse related Delta lake storage accounts
+// Status: dont understand this requried ask hora
 #--------------------------------------
 # Create Storage Account
 #-------------------------------------
@@ -24,7 +25,7 @@ resource "azurerm_storage_account" "syn_st" {
   account_replication_type = var.storage_account_replication_type
   account_kind             = var.storage_account_kind
   is_hns_enabled           = var.hns_enabled
-  tags                     = var.tags
+  tags = local.common_tags
 }
 
 #-----------------------------------------
@@ -61,6 +62,7 @@ resource "azurerm_role_assignment" "syn_storage_cont" {
 
 //synapse workspace identity neededs role assignments (see  https://learn.microsoft.com/en-us/azure/synapse-analytics/quickstart-create-workspace#configure-access-to-the-storage-account-from-your-workspace)
 //TODO - assign ws identity needed st roles
+// Status: this is added already in synapse-workspace module - hence not needed
 
 #-----------------------------------------
 # Virtual Network & Firewall configuration

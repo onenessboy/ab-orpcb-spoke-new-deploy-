@@ -46,15 +46,11 @@ variable "env" {
   type = string
 }
 
+ //TODO - remove default values and have them present into the metadata\config per environment
+ // status : done, now it is part of env.json
 variable "admins_group" {
   description = "Roles assigned to Admins Group"
   type = any
-  default = { //TODO - remove default values and have them present into the metadata\config per environment
-    dev = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    sbx = "a53b98ae-d384-4248-97a2-f29c0c729899"
-    stg = "98c77ec5-f35b-4465-8d52-7712c2213ac3"
-    prod = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-}
 }
 
 variable "tags" {
@@ -63,9 +59,12 @@ variable "tags" {
   default     = {}
 }
 
+//TODO - add description field with description for what principal_id is
+// status: complete
 variable "principal_id" {
-  //TODO - add description field with description for what principal_id is
+  description = "Principal id of workspace identity"
   type = string
 }
 
 //TODO - add variables for azure monitoring settings (include) feature/deploy flag
+// Status - Pending

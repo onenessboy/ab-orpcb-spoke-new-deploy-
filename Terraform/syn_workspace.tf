@@ -7,7 +7,8 @@ module "synapse_workspace" {
   rg_name  = module.resource_group.name
   location = module.resource_group.location
   postfix = random_string.postfix.result
-  env = var.env                     //TODO remove the env variable; module doesn't need to know the env
+  //TODO remove the env variable; module doesn't need to know the env
+  #env = var.env                     
   client_code = var.client_code
   charge_code = var.charge_code
   workspace_name = "syn-orpcb-ws${var.client_code}-${var.env}-${local.location_prefix[coalesce(var.location)]}"
@@ -25,18 +26,21 @@ module "synapse_workspace" {
   synadmin_password = var.synadmin_password
   locationcode = var.locationcode
 
-  admins_group = {    //TODO - flaten this out as the module should need to know the environment
-    dev = var.admins_group
-    sbx = var.admins_group
-    stg = var.admins_group
-  }
-  contributors_group = {
-    dev = var.contributors_group
-    sbx = var.contributors_group
-    stg = var.contributors_group
-  }
-
-  tags = local.common_tags
+//TODO - flaten this out as the module should need to know the environment
+// status : done
+  # admins_group = {    
+  #   dev = var.admins_group
+  #   sbx = var.admins_group
+  #   stg = var.admins_group
+  # }
+  # contributors_group = {
+  #   dev = var.contributors_group
+  #   sbx = var.contributors_group
+  #   stg = var.contributors_group
+  # }
+ AAD_contributors_group_id = var.AAD_contributors_group_id
+ AAD_admins_group_id = var.AAD_admins_group
+tags = local.common_tags
 
   aad_login = {
     aad_login_name = var.aad_login_name
